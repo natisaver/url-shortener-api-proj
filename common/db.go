@@ -16,6 +16,7 @@ import (
 	dbname   = "urlDB"
   )
 
+// variable to use for getter
 var dbobj *sql.DB
 
 func InitDB() (*sql.DB, err) {
@@ -30,10 +31,13 @@ func InitDB() (*sql.DB, err) {
 	if err != nil {
 		return nil, err
 	}
-	// defer the connection closing, this runs before InitDB() returns
+	
+	// defer means this runs before InitDB() returns
+	// close the db connection after testing connectivity
+	// release resource pool as there is limited access to the DB
 	defer db.Close()
 
-	// open db connection
+	// open db connection to test connectivity
 	err = db.Ping()
 	if err != nil {
 		return nil, err
@@ -44,11 +48,17 @@ func InitDB() (*sql.DB, err) {
 
 	fmt.Println("Successfully connected to DB!")
 
+	// return a db connection
+	// that you can then use to connect or disconnect from
 	return db, nil
 }
 
 // public function
 // utilise singleton principle
+// getter for the initialised db connection
 func GetDB() *sql.DB {
 	return dbobj
 }
+
+
+

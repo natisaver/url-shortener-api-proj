@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
     "net/http"
 	"github.com/gin-gonic/gin"
+	// "github.com/natisaver/urlshortner/routes"
+	"github.com/natisaver/url-shortener-api-proj/urlshortner/routes"
 )
 
 type server struct {
@@ -12,21 +13,21 @@ type server struct {
 }
 
 // server methods
-func (server *server) Init(port string) {
-	server.port = port
+func (s *server) Init(port string) {
+	s.port = port
+	s.router = gin.Default()
 
-	server.router = gin.Default()
-	server.router.GET("/ping", ping)
-	server.router.GET("/", home)
+	s.router.GET("/ping", ping)
+	s.router.GET("/", home)
 
 	// All routes defined within this group will have the /v1 prefix
-	apiV1 := server.router.Group("/v1")
+	apiV1 := s.router.Group("/v1")
 	apiV1.POST("/shorten", routes.ShortenURL)
-	apiV1.GET("/url", routes.GetLongURL)
+	apiV1.GET("/:encodedurl", routes.GetLongURL)
 }
 
-func (server *server) Serve() error {
-	return server.router.Run(fmt.Sprintf(":%v", server.port))
+func (s *server) Serve() error {
+	return s.router.Run("localhost:" + s.port)
 }
 
 // router functions
@@ -36,11 +37,11 @@ func home(c *gin.Context) {
 
 func ping(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{
-		"message": "pong"
+		"message": "pong",
 	})
 }
 
-// =========NOTES============
+// =========NOTES ON GOLANG METHODS============
 // format of methods
 // func (obj MyType) MethodName() (returnType) {}
 
