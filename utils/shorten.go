@@ -8,14 +8,14 @@ import (
 )
 
 func ShortenURL(sanitizedURL string) (string, error) {
-	// Sanitize and validate the input URL
+	// validate the input URL
 	parsedURL, err := url.Parse(sanitizedURL)
 	if err != nil || (parsedURL.Scheme != "http" && parsedURL.Scheme != "https") {
 		return "", fmt.Errorf("Invalid URL: %s", sanitizedURL)
 	}
 
 	// Base64 encode the URL to create a short representation
-	shortURL := base64.URLEncoding.EncodeToString([]byte(originalURL))
+	shortURL := base64.URLEncoding.EncodeToString([]byte(sanitizedURL))
 
 	// Remove padding characters from base64 encoding
 	shortURL = strings.TrimRight(shortURL, "=")

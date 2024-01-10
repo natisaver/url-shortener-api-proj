@@ -19,7 +19,7 @@ import (
 // variable to use for getter
 var dbobj *sql.DB
 
-func InitDB() (*sql.DB, err) {
+func InitDB() (*sql.DB, error) {
 	// SSL is chosen as disabled 
 	// likely to run into errors as its not defaultly enabled on lib/pq
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+ 

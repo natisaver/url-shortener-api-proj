@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	"github.com/natisaver/url-shortener-api-proj/urlshortner/common"
+	"urlshortener/common"
 )
 
 func main() {

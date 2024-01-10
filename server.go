@@ -4,7 +4,7 @@ import (
     "net/http"
 	"github.com/gin-gonic/gin"
 	// "github.com/natisaver/urlshortner/routes"
-	"github.com/natisaver/url-shortener-api-proj/urlshortner/routes"
+	"urlshortener/routes"
 )
 
 type server struct {

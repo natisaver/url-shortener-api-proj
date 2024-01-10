@@ -1,9 +1,10 @@
-module urlshortner
+module urlshortener
 
 go 1.21.5
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.17.0
 	github.com/sirupsen/logrus v1.9.3

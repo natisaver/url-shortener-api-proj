@@ -3,6 +3,7 @@ package url
 import (
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 type URL struct {
@@ -13,17 +14,27 @@ type URL struct {
 }
 
 // StoreURLWithTransaction stores URL information into the database within a transaction
-func StoreURLWithTransaction(tx *sql.DB, url URL) error {
+func StoreURLWithTransaction(tx *sql.Tx, url URL) error {
+	// Declare err at the beginning of the function
+	var err error
+
 	// Defer a function to either commit or rollback the transaction
 	// () at the end is used to invoke the function immediately
 	defer func() {
 		if p := recover(); p != nil {
 			// A panic occurred, rollback the transaction
-			tx.Rollback()
-			panic(p) // Re-panic after rollback as its caught by recover()
+			rollbackErr := tx.Rollback()
+			if rollbackErr != nil {
+				fmt.Println("Error rolling back transaction:", rollbackErr)
+			}
+			// Re-panic after rollback as it's caught by recover()
+			panic(p)
 		} else if err != nil {
 			// An error occurred, rollback the transaction
-			tx.Rollback()
+			rollbackErr := tx.Rollback()
+			if rollbackErr != nil {
+				fmt.Println("Error rolling back transaction:", rollbackErr)
+			}
 		} else {
 			// All good, commit the transaction
 			err = tx.Commit()
@@ -55,15 +66,26 @@ func StoreURLWithTransaction(tx *sql.DB, url URL) error {
 	return nil
 }
 
-func GetURLWithTransaction(tx *sql.DB, url URL) error {
+
+
+func GetURLWithTransaction(tx *sql.Tx, url URL) (string, error) {
+	var err error
+
 	defer func() {
 		if p := recover(); p != nil {
 			// A panic occurred, rollback the transaction
-			tx.Rollback()
-			panic(p) // Re-panic after rollback as its caught by recover()
+			rollbackErr := tx.Rollback()
+			if rollbackErr != nil {
+				fmt.Println("Error rolling back transaction:", rollbackErr)
+			}
+			// Re-panic after rollback as it's caught by recover()
+			panic(p)
 		} else if err != nil {
 			// An error occurred, rollback the transaction
-			tx.Rollback()
+			rollbackErr := tx.Rollback()
+			if rollbackErr != nil {
+				fmt.Println("Error rolling back transaction:", rollbackErr)
+			}
 		} else {
 			// All good, commit the transaction
 			err = tx.Commit()
@@ -77,20 +99,16 @@ func GetURLWithTransaction(tx *sql.DB, url URL) error {
 	// Query the database to find the longurl based on the shortenedURL
 	var longURL string
 
-	err := db.QueryRow("SELECT longurl FROM urls WHERE shorturl = ?", url.ShortURL).Scan(&longURL)
+	err = tx.QueryRow("SELECT longurl FROM urls WHERE shorturl = ?", url.ShortURL).Scan(&longURL)
 
 	if err == sql.ErrNoRows {
 		// Handle case where no matching record was found
-		c.JSON(http.StatusNotFound, gin.H{"error": "Shortened URL not found"})
-		return
+		return "", fmt.Errorf("Shortened URL not found")
 	} else if err != nil {
 		// Handle other database query errors
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
-		return
+		return "", fmt.Errorf("Internal Server Error")
 	}
 
-	// Redirect or respond with the longURL
-	c.Redirect(http.StatusFound, longURL)
-	// c.JSON(http.StatusOK, gin.H{"longurl": longURL})
+	return longURL, nil
 }
 
