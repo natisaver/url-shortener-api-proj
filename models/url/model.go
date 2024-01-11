@@ -52,9 +52,11 @@ func StoreURLWithTransaction(tx *sql.Tx, url URL) error {
 		return err
 	}
 
-	// If count is greater than 0, shorturl already exists, return an error
+	// If count is greater than 0, shorturl already exists
+	// dont return an error as we want the user to receive the already shortened url
 	if count > 0 {
-		return fmt.Errorf("ShortURL '%s' already exists in the database", url.ShortURL)
+		// return fmt.Errorf("ShortURL '%s' already exists in the database", url.ShortURL)
+		return nil
 	}
 
 	// If shorturl does not exist, insert the new record within the transaction

@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	// "github.com/natisaver/urlshortner/routes"
@@ -18,6 +19,11 @@ type Server struct {
 func (s *Server) Init(port string) {
 	s.port = port
 	s.router = gin.Default()
+
+	// add cors middleware as frontend and server are on different ports
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"} // Add frontend URL
+	s.router.Use(cors.New(config))
 
 	s.router.GET("/ping", ping)
 	s.router.GET("/", home)

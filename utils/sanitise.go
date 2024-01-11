@@ -14,9 +14,19 @@ func SanitizeURL(rawURL string) (string, error) {
 
 	// Parse the URL
 	// If the parsing is successful, a url.URL structure (parsedURL) is obtained, representing the various components of the URL.
-	parsedURL, err := url.ParseRequestURI(rawURL)
+	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
 		return "", err
+	}
+
+	// Check if the host is a valid domain
+	if !isValidDomain(parsedURL.Host) {
+		return "", fmt.Errorf("invalid URL: invalid domain")
+	}
+
+	// Check if the parsed URL has a scheme and host
+	if parsedURL.Scheme == "" || parsedURL.Host == "" {
+		return "", fmt.Errorf("invalid URL: missing scheme or host")
 	}
 
 	// Reassemble the URL with cleaned components
@@ -36,4 +46,9 @@ func SanitizeURL(rawURL string) (string, error) {
 	}
 
 	return sanitizedURL, nil
+}
+
+func isValidDomain(host string) bool {
+	// Perform additional checks for a valid domain (you can customize this)
+	return strings.Contains(host, ".")
 }

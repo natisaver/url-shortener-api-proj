@@ -17,20 +17,24 @@ func ShortenURL(c *gin.Context) {
 	// Parse the JSON request body into a URL object
 	var request url.URL
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	// sanitise for security
-	sanitizedURL, err := utils.SanitizeURL(request.LongURL)
-	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error parsing JSON request:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid URL"})
 		return
 	}
 
-	// shorten it to an encoded form
+	// Sanitize for security
+	sanitizedURL, err := utils.SanitizeURL(request.LongURL)
+	if err != nil {
+		fmt.Println("Error sanitizing URL:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid URL"})
+		return
+	}
+
+	// Shorten the URL to an encoded form
 	shortenedURL, err := utils.ShortenURL(sanitizedURL)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error shortening URL:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid URL"})
 		return
 	}
 
@@ -41,32 +45,39 @@ func ShortenURL(c *gin.Context) {
 		CreatedAt: time.Now(),
 	}
 
-	// open db
+	// Open the database
 	db, err := common.GetDB()
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error opening database connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server Error"})
 		return
 	}
 	defer db.Close()
 
-	// store into db
-	// we first create a transaction i.e. a temporary form of our DB connection
+	// Store into the database
+	// We first create a transaction, i.e., a temporary form of our DB connection
 	tx, err := db.Begin()
 	if err != nil {
-		fmt.Println("Error while beginning transaction:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		fmt.Println("Error beginning database transaction:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server Error"})
 		return
 	}
 
-	// instead of passing in the actual DB connection
+	// Instead of passing in the actual DB connection,
 	// this is to ensure all queries are in one transaction, ensuring consistency of data
 	err = url.StoreURLWithTransaction(tx, modifiedRequest)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error storing URL in the database:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"shortenedURL": modifiedRequest.ShortURL, "longURL": modifiedRequest.LongURL, "createdAt": modifiedRequest.CreatedAt, "error": nil})
+	c.JSON(http.StatusOK, gin.H{
+		"shorturl":  modifiedRequest.ShortURL,
+		"longurl":   modifiedRequest.LongURL,
+		"createdat": modifiedRequest.CreatedAt,
+		"error":     nil,
+	})
 }
 
 func GetLongURL(c *gin.Context) {
