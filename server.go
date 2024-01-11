@@ -1,19 +1,21 @@
 package main
 
 import (
-    "net/http"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+
 	// "github.com/natisaver/urlshortner/routes"
 	"urlshortener/routes"
 )
 
-type server struct {
-	port string
+type Server struct {
+	port   string
 	router *gin.Engine
 }
 
-// server methods
-func (s *server) Init(port string) {
+// Server methods
+func (s *Server) Init(port string) {
 	s.port = port
 	s.router = gin.Default()
 
@@ -26,7 +28,7 @@ func (s *server) Init(port string) {
 	apiV1.GET("/:encodedurl", routes.GetLongURL)
 }
 
-func (s *server) Serve() error {
+func (s *Server) Serve() error {
 	return s.router.Run("localhost:" + s.port)
 }
 

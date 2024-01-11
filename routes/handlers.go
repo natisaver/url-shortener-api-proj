@@ -3,13 +3,14 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"strings"
+	"time"
+	"urlshortener/common"
+	"urlshortener/models/url"
+	"urlshortener/utils"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"time"
-	"urlshortener/utils"
-	"urlshortener/models/url"
-	"urlshortener/common"
-	"strings"
 )
 
 func ShortenURL(c *gin.Context) {
@@ -34,19 +35,29 @@ func ShortenURL(c *gin.Context) {
 	}
 
 	// Create a new object with the modified shortURL
-    modifiedRequest := url.URL{
-        LongURL:   sanitizedURL,
-        ShortURL:  shortenedURL,
+	modifiedRequest := url.URL{
+		LongURL:   sanitizedURL,
+		ShortURL:  shortenedURL,
 		CreatedAt: time.Now(),
-    }
+	}
+
+	// open db
+	db, err := common.GetDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	defer db.Close()
 
 	// store into db
 	// we first create a transaction i.e. a temporary form of our DB connection
-	tx, err := common.GetDB().Begin()
+	tx, err := db.Begin()
 	if err != nil {
+		fmt.Println("Error while beginning transaction:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 		return
 	}
+
 	// instead of passing in the actual DB connection
 	// this is to ensure all queries are in one transaction, ensuring consistency of data
 	err = url.StoreURLWithTransaction(tx, modifiedRequest)
@@ -54,20 +65,31 @@ func ShortenURL(c *gin.Context) {
 		fmt.Println("Error:", err)
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{"shortenedURL": modifiedRequest.ShortURL, "longURL": modifiedRequest.LongURL, "createdAt": modifiedRequest.CreatedAt, "error": nil})
 }
 
 func GetLongURL(c *gin.Context) {
 	shortenedurl := c.Param("encodedurl")
+
 	urlData := url.URL{
-        ShortURL:  shortenedurl,
+		ShortURL:  shortenedurl,
 		CreatedAt: time.Now(),
-    }
-	tx, err := common.GetDB().Begin()
+	}
+
+	// open db
+	db, err := common.GetDB()
 	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	defer db.Close()
+
+	tx, err := db.Begin()
+	if err != nil {
+		fmt.Println("Error while beginning transaction:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
-    	return
+		return
 	}
 
 	longURL, err := url.GetURLWithTransaction(tx, urlData)

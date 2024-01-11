@@ -7,9 +7,9 @@ import (
 )
 
 type URL struct {
-    ID			string	`json:"id"`
-    ShortURL	string  `json:"shorturl"`
-    LongURL		string	`json:"longurl"`
+	ID        string    `json:"id"`
+	ShortURL  string    `json:"shorturl"`
+	LongURL   string    `json:"longurl"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -66,8 +66,6 @@ func StoreURLWithTransaction(tx *sql.Tx, url URL) error {
 	return nil
 }
 
-
-
 func GetURLWithTransaction(tx *sql.Tx, url URL) (string, error) {
 	var err error
 
@@ -98,17 +96,15 @@ func GetURLWithTransaction(tx *sql.Tx, url URL) (string, error) {
 
 	// Query the database to find the longurl based on the shortenedURL
 	var longURL string
-
-	err = tx.QueryRow("SELECT longurl FROM urls WHERE shorturl = ?", url.ShortURL).Scan(&longURL)
+	err = tx.QueryRow("SELECT longurl FROM urls WHERE shorturl = $1", url.ShortURL).Scan(&longURL)
 
 	if err == sql.ErrNoRows {
 		// Handle case where no matching record was found
-		return "", fmt.Errorf("Shortened URL not found")
+		return "", fmt.Errorf("shortened URL not found")
 	} else if err != nil {
 		// Handle other database query errors
-		return "", fmt.Errorf("Internal Server Error")
+		return "", fmt.Errorf("internal Server Error")
 	}
 
 	return longURL, nil
 }
-
