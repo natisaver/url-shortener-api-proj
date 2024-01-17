@@ -200,3 +200,7 @@
 {"level":"info","msg":"Database connection established","time":"2024-01-17T07:54:33Z"}
 {"level":"info","msg":"Cleanup Job Running","time":"2024-01-17T07:54:33Z"}
 {"level":"info","msg":"Server running!!","time":"2024-01-17T07:54:33Z"}
+{"level":"info","msg":"Server initialized","time":"2024-01-17T07:56:09Z"}
+{"level":"info","msg":"Database connection established","time":"2024-01-17T07:56:09Z"}
+{"level":"info","msg":"Cleanup Job Running","time":"2024-01-17T07:56:09Z"}
+{"level":"info","msg":"Server running!!","time":"2024-01-17T07:56:09Z"}
