@@ -22,9 +22,10 @@ func cleanupExpiredRecords() {
 
 	// Calculate the date 30 days ago
 	thresholdDate := time.Now().Add(-30 * 24 * time.Hour)
+	uint64Time := thresholdDate.UnixNano()
 
 	// Prepare the DELETE statement
-	_, err = db.Exec("DELETE FROM urls WHERE createdat < $1", thresholdDate)
+	_, err = db.Exec("DELETE FROM urls WHERE createdat < $1", uint64Time)
 	if err != nil {
 		fmt.Println("Error executing delete statement:", err)
 		return
