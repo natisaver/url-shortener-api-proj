@@ -11,6 +11,7 @@ function UrlShortener() {
 
   const shortenUrl = async () => {
     try {
+      setCopySuccess('')
       const response = await axios.post('http://localhost:8080/v1/shorten', {
         longurl: longUrl,
       });

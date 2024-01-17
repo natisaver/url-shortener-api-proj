@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -50,5 +51,7 @@ func SanitizeURL(rawURL string) (string, error) {
 
 func isValidDomain(host string) bool {
 	// Perform additional checks for a valid domain (you can customize this)
-	return strings.Contains(host, ".")
+	domainRegex := regexp.MustCompile(`^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return domainRegex.MatchString(host)
+	// return strings.Contains(host, ".")
 }

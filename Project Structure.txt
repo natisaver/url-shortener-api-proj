@@ -1,0 +1,109 @@
+- handler -> intercept the incoming request (http request handler) 
+- cronjob: periodically triggered -> call controller
+- job: manually triggered -> call controller
+
+- controller -> joined business logic
+- repository -> CRUD action i.e. SQL queries (or use ORM)
+- model -> entities
+
+
+Object Relational Mapper
+
+
+handler/job -- sanitize, validate, transform, normalize the arguments --> controller(param1, param2, param3)
+func StoreUrlHandler(req http.Request, resp http.Response) {
+  targetUrl := req.GetParam('....')
+  adjustedUrl = targetUrl.Trim()
+
+  storeUrlController = NewUrlController(ctx)
+  err = storeUrlController.StoreUrl(adjustedUrl)
+
+  if err !=nil {
+    resp.Code = 500
+  } else {
+    resp.Code = 200
+  }
+}
+
+
+util
+func StopPanic(ctx, rollbackFunc) {
+  if p := recover(); p!= nil {
+    print(p)
+    if rollbackFunc != nil {
+      rollbackFunc()
+    }
+  }
+}
+
+controller
+
+func StoreURL(url string)  error {
+  db, err := GetDB()
+  if err != nil {
+    return err
+  }
+
+  tx, err := db.BeginTx()
+  if err != nil {
+    return err
+  }
+  defer StopPanic(ctx, tx.Rollback)
+
+  err = urlrepo.StoreURL(ctx, tx)
+  if err != nil {
+    tx.Rollback()
+    return err
+  }
+
+  err =urlRepo.DoSthElse(ctx, tx)
+  if err != nil {
+    tx.Rollback()
+    return err
+  }
+
+  err = tx.Commit()
+  if err != nil {
+    tx.Rollback()
+    return err
+  }
+
+  // send email here
+  err = emailUtil.SendEMail(....)
+  if err != nil {
+    log.Warn(......)
+  }
+
+  return nil
+}
+
+
+repo
+
+
+
+StoreURLHandler(...) {
+  // validate
+
+  // sanitize
+
+  // normalize
+  ..
+
+  // store URL -> call controller
+  ....  
+}
+
+StoreUrlController(..) {
+  // obtain db connection
+
+  // start tx
+
+  // store url
+
+  // do sth else
+
+  // commit
+
+  // send email
+}

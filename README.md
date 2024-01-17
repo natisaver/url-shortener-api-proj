@@ -19,9 +19,8 @@ do note go run main.go will not work as it does not see server.go as part of the
 ```
 cd frontend
 npm install
-npm start
+npm start  
 ```
-
 
 
 ## curl commands to test api
@@ -64,7 +63,7 @@ CREATE TABLE urls (
     id SERIAL PRIMARY KEY,
     shorturl VARCHAR(255) UNIQUE NOT NULL,
     longurl TEXT NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    createdat BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)::BIGINT
 );
 ```
 
@@ -72,8 +71,14 @@ CREATE TABLE urls (
 SELECT * FROM public.urls
 ORDER BY id ASC 
 ```
+![Alt text](image-1.png)
 
-![Alt text](image.png)
+## sql query to index shorturl
+since we need to often search for clashes in shorturl
+```sql
+-- Index for the shorturl column to speed up retrieval
+CREATE INDEX idx_shorturl ON urls (shorturl);
+```
 
 ## notes on the http codes
 404 means the route is not found
@@ -96,3 +101,17 @@ cmd+shift+L edits the same words at the same time
 npx create-react-app url-shortener-frontend
 cd url-shortener-frontend
 ```
+
+## notes on singleton principle for the use of db connection object
+https://refactoring.guru/design-patterns/singleton
+
+## expiration of old data
+Use a cron job
+We store a createdAt field. After 30 days, any entries will be deleted.
+Our background goroutine will run a cleanup every 24 hours.
+
+## context
+ctx has a session scope and is immutable
+it is passed through the function call stack
+used for tracing purposes => look into go jaegar
+used also for testing => you can add params into it, where functions can check the ctx for these params, then execute specific functions
