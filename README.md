@@ -21,7 +21,7 @@ cd frontend
 npm install
 npm start  
 ```
-
+![Alt text](image.png)
 
 ## curl commands to test api
 ### Create a shortened url
