@@ -80,6 +80,9 @@ since we need to often search for clashes in shorturl
 CREATE INDEX idx_shorturl ON urls (shorturl);
 ```
 
+## Architecture
+![Alt text](image-2.png)
+
 ## notes on the http codes
 404 means the route is not found
 200 is a successful http request e.g. if you send a post
