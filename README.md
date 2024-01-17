@@ -81,7 +81,7 @@ CREATE INDEX idx_shorturl ON urls (shorturl);
 ```
 
 ## Architecture
-![Alt text](image-3.png)
+![Alt text](image-2.png)
 
 ## notes on the http codes
 404 means the route is not found
