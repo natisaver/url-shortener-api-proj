@@ -15,8 +15,10 @@ import (
 // > server
 // > handler
 // > controller
-// > repo (CRUD)
+// > repo/data management(DM)/data access(CRUD)
 // which handles models
+
+//usually we put controller
 
 func ShortenURL(c *gin.Context) {
 	// Parse the JSON request body into a URL object

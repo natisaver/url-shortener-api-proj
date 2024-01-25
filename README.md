@@ -118,3 +118,29 @@ ctx has a session scope and is immutable
 it is passed through the function call stack
 used for tracing purposes => look into go jaegar
 used also for testing => you can add params into it, where functions can check the ctx for these params, then execute specific functions
+
+
+## unit testing design
+always start with bottom layer of the code for testing
+=> e.g. repo layer
+
+gomock
+
+start with valid cases
+invalid:
+- missing parameter
+- invalid parameter
+- internal errors
+
+write a test suite
+=> initialisation before running tests
+testify suite
+the setupSuite (one file) runs before the whole group of tests
+setupTest is run before each test
+teardownSuite
+teardownTest
+
+also freeze time for time testing
+
+
+every file will have the same name + "_test"
