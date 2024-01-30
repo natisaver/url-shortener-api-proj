@@ -38,7 +38,18 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func StoreURLController(requestObj urlmodel.URL) error {
+type URLControllerInterface interface {
+	StoreURLController(urlmodel.URL) error
+	GetLongURLController(urlmodel.URL) (string, error)
+}
+
+type urlController struct{}
+
+func NewURLController() URLControllerInterface {
+	return &urlController{}
+}
+
+func (u *urlController) StoreURLController(requestObj urlmodel.URL) error {
 
 	// Open the database
 	// db, err := common.GetDB()
@@ -66,11 +77,15 @@ func StoreURLController(requestObj urlmodel.URL) error {
 		}
 	}()
 
+	// Create CRUD repository instance
+	repoInstance := repo.NewCRUDRepository(tx)
+
 	// ensure all queries are in one transaction, ensuring consistency of data
 	// instead of passing in the db connection obj
 
 	// call crud
-	err := repo.StoreURL(tx, requestObj)
+	// err := repo.(tx,requestObj)
+	err := repoInstance.StoreURL(requestObj)
 	if err != nil {
 		tx.Rollback()
 		fmt.Println("Error storing URL in the database:", err)
@@ -82,7 +97,7 @@ func StoreURLController(requestObj urlmodel.URL) error {
 	return nil
 }
 
-func GetLongURLController(requestObj urlmodel.URL) (string, error) {
+func (u *urlController) GetLongURLController(requestObj urlmodel.URL) (string, error) {
 	// open db
 	// db, err := common.GetDB()
 	// with ORM
@@ -97,8 +112,12 @@ func GetLongURLController(requestObj urlmodel.URL) (string, error) {
 		}
 	}()
 
+	// Create CRUD repository instance
+	repoInstance := repo.NewCRUDRepository(tx)
+
 	// call crud
-	longURL, err := repo.GetURL(tx, requestObj)
+	longURL, err := repoInstance.GetURL(requestObj)
+	// longURL, err := repo.GetURL(tx, requestObj)
 	if err != nil {
 		// rollback immediately
 		tx.Rollback()

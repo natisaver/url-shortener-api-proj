@@ -15,11 +15,12 @@ import (
 )
 
 const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "123"
-	dbname   = "urlDB"
+	host       = "localhost"
+	port       = 5432
+	user       = "postgres"
+	password   = "123"
+	dbname     = "urlDB"
+	dbtestname = "urlDBTest"
 )
 
 // We have 2 choices here for DB connection

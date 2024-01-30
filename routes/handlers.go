@@ -52,7 +52,9 @@ func ShortenURL(c *gin.Context) {
 	}
 
 	// Call the controller to handle business logic
-	err = controllers.StoreURLController(modifiedRequest)
+	// Create controller instance
+	controllerInstance := controllers.NewURLController()
+	err = controllerInstance.StoreURLController(modifiedRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -74,7 +76,9 @@ func GetLongURL(c *gin.Context) {
 	}
 
 	// Call the controller to handle business logic
-	longURL, err := controllers.GetLongURLController(urlData)
+	// Create controller instance
+	controllerInstance := controllers.NewURLController()
+	longURL, err := controllerInstance.GetLongURLController(urlData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

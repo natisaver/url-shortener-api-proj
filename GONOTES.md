@@ -1,5 +1,11 @@
 
-## First way of implementing constructor  
+# Interfaces
+- What is its purpose? Code only needs to interact with the methods of the interface
+- It does not need to know the implementation of the methods
+- You can thus change the implementation of the methods without affecting the code
+
+## First way of implementing interface methods  
+### struct is public 
 ```go
 type Polygon interface {
 	Area() int
@@ -20,7 +26,8 @@ func (t *Triangle) Perimeter() int {
 }
 ```
 
-## Second way of implementing constructor  
+## Second way of implementing interface methods
+## using a constructor  
 ### struct is private
 ```go
 type Polygon interface {
@@ -48,6 +55,10 @@ func (t *triangle) Perimeter() int {
 
 
 ## named return
+if you declare a variable name for the return part of your function
+then this variable can be used in the function body
+
+
 ```go
 // returns <nil>
 // when the panic() is called, it stops execution, so line return err does not run
@@ -80,3 +91,5 @@ func Sthh() (err error) {
 	return
 }
 ```
+
+
