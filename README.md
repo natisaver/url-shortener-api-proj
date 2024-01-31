@@ -236,3 +236,62 @@ This is because we want to do testing in our controller layer which depends on t
 go test ./...
 ```
 
+## Why should context not be in struct?
+- This is to retain flexibility
+- the example below shows that if ctx is part of struct, then we will have to instantiate 2 different objects, repo twice just to insert data into A and B
+```go
+func CtrlA(ctx context.Context) error {
+
+	repo := NewRepo(ctx=1000)
+	repo.InsertDataA(dataA)
+
+    repo := NewRepo(ctx=2000)
+	repo.UpdateDataB(dataB)
+
+	return nil
+}
+
+```
+
+- However, if we leave context to be passed into the function calls, look at the added flexibility!:
+```go
+func CtrlA(ctx context.Context) error {
+
+	repo := NewRepo()
+	ctxA := context.WithTImout(contex.Background, 1000)
+	repo.InsertDataA(ctx, dataA)
+
+	ctxB := context.WithTImout(contex.Background, 5000)
+	repo.UpdateDataB(ctx, dataB)
+
+	return nil
+}
+
+```
+
+- However, there are exceptions, look at my TestSuites for example, there I used context in struct, and that is because I want a baseline context that contains a context key for my DB, this is so that before every test runs, it can just duplicate this context and add on to it easily.
+
+```go
+
+type controllersTestSuite struct {
+	suite.Suite                                    // embed the suite package
+	controllers controllers.URLControllerInterface // embed the repo which contains the methods to test
+	db          *gorm.DB                           // test database instance
+	clock       clockwork.Clock                    // mock clock for freezing time
+	ctx context.Context
+}
+
+// Run before each test
+func (s *controllersTestSuite) SetupTest() {
+	// set up fresh context before each test
+	s.ctx = context.Background()
+	s.db = common.GetDBTest()
+	// and add the test db into the context
+	s.ctx = context.WithValue(s.ctx, config.CtxKeyDB, s.db)
+	s.controllers = controllers.NewURLController()
+	// Truncate all tables in the database
+	if err := utils.TruncateTables(s.db); err != nil {
+		s.T().Fatal(err)
+	}
+}
+```
