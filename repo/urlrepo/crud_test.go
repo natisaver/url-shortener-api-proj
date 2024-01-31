@@ -69,12 +69,12 @@ func TestCRUDRepositoryTestSuite(t *testing.T) {
 // https://pkg.go.dev/github.com/stretchr/testify/assert#GreaterOrEqual
 
 // StoreURL
-func (s *crudRepositoryTestSuite) TestStoreURLModelNotExists() {
+func (s *crudRepositoryTestSuite) Test_StoreURL_ModelNotExists() {
 	err := s.crudRepo.StoreURL(urlmodel.URL{})
 	assert.ErrorContains(s.T(), err, "empty object")
 }
 
-func (s *crudRepositoryTestSuite) TestStoreURLModelShortURLDuplicate() {
+func (s *crudRepositoryTestSuite) Test_StoreURL_ModelShortURLDuplicate() {
 	var count int64
 	mockURL := urlmodel.URL{
 		ShortURL: "abc",
@@ -93,7 +93,7 @@ func (s *crudRepositoryTestSuite) TestStoreURLModelShortURLDuplicate() {
 	assert.EqualValues(s.T(), count, 1)
 }
 
-func (s *crudRepositoryTestSuite) TestStoreURLInsert() {
+func (s *crudRepositoryTestSuite) Test_StoreURL_Insert() {
 	mockURL := urlmodel.URL{
 		ShortURL: "abc",
 		LongURL:  "abcd",
@@ -107,12 +107,12 @@ func (s *crudRepositoryTestSuite) TestStoreURLInsert() {
 }
 
 // GetURL
-func (s *crudRepositoryTestSuite) TestGetURLModelNotExists() {
+func (s *crudRepositoryTestSuite) Test_GetURL_ModelNotExists() {
 	_, err := s.crudRepo.GetURL(urlmodel.URL{})
 	assert.ErrorContains(s.T(), err, "empty object")
 }
 
-func (s *crudRepositoryTestSuite) TestGetURLModelEmptyDB() {
+func (s *crudRepositoryTestSuite) Test_GetURL_ModelEmptyDB() {
 	// shorturl to search not in db
 	mockURLNew := urlmodel.URL{
 		ShortURL: "abcde",
@@ -125,7 +125,7 @@ func (s *crudRepositoryTestSuite) TestGetURLModelEmptyDB() {
 
 }
 
-func (s *crudRepositoryTestSuite) TestGetURLModelRecordNotExists() {
+func (s *crudRepositoryTestSuite) Test_GetURL_ModelRecordNotExists() {
 	mockURL := urlmodel.URL{
 		ShortURL: "abc",
 		LongURL:  "abcd",
@@ -143,7 +143,7 @@ func (s *crudRepositoryTestSuite) TestGetURLModelRecordNotExists() {
 
 }
 
-func (s *crudRepositoryTestSuite) TestGetURLModelLongURLNotExists() {
+func (s *crudRepositoryTestSuite) Test_GetURL_ModelLongURLNotExists() {
 	mockURL := urlmodel.URL{
 		ShortURL: "abc",
 	}
@@ -159,7 +159,7 @@ func (s *crudRepositoryTestSuite) TestGetURLModelLongURLNotExists() {
 	assert.EqualValues(s.T(), res, "")
 }
 
-func (s *crudRepositoryTestSuite) TestGetURLInsert() {
+func (s *crudRepositoryTestSuite) Test_GetURL_Insert() {
 	mockURL := urlmodel.URL{
 		ShortURL: "abc",
 		LongURL:  "abcde",

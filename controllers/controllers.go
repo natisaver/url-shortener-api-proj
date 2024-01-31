@@ -29,32 +29,43 @@ package controllers
 // =====================
 
 import (
+	"context"
 	"fmt"
 	"urlshortener/common"
+	"urlshortener/config"
 	"urlshortener/models/urlmodel"
 	repo "urlshortener/repo/urlrepo"
 	"urlshortener/utils"
 
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 type URLControllerInterface interface {
-	StoreURLController(urlmodel.URL) error
-	GetLongURLController(urlmodel.URL) (string, error)
+	StoreURLController(context.Context, urlmodel.URL) error
+	GetLongURLController(context.Context, urlmodel.URL) (string, error)
 }
 
-type urlController struct{}
+type urlController struct {
+}
 
 func NewURLController() URLControllerInterface {
 	return &urlController{}
 }
 
-func (u *urlController) StoreURLController(requestObj urlmodel.URL) error {
+func (u *urlController) StoreURLController(ctx context.Context, requestObj urlmodel.URL) error {
+
+	// For Testing
+	// Check context to see if it contains a testDB, otherwise GetDB
+	// .(*gorm.DB) asserts its type
+
+	db := ctx.Value(config.CtxKeyDB).(*gorm.DB)
+	if db == nil {
+		db = common.GetDB()
+	}
 
 	// Open the database
 	// db, err := common.GetDB()
-	db := common.GetDB()
-
 	// if err != nil {
 	// 	fmt.Println("Error opening database connection:", err)
 	// 	return err
@@ -62,8 +73,8 @@ func (u *urlController) StoreURLController(requestObj urlmodel.URL) error {
 	// defer db.Close()
 
 	// Create transaction, i.e., a temporary form of our DB connection
-	// tx, err := db.Begin()
 	tx := db.Begin()
+	// tx, err := db.Begin()
 	// if err != nil {
 	// 	fmt.Println("Error beginning database transaction:", err)
 	// 	return err
@@ -77,8 +88,14 @@ func (u *urlController) StoreURLController(requestObj urlmodel.URL) error {
 		}
 	}()
 
-	// Create CRUD repository instance
-	repoInstance := repo.NewCRUDRepository(tx)
+	// For Testing
+	// Check context to see if it contains a mock CRUDRepository with different method implementations
+	// assert it to type CRUDRepositoryInterface
+	repoInstance := ctx.Value(config.CtxKeyMockCRUDRepository).(repo.CRUDRepositoryInterface)
+	if repoInstance == nil {
+		// Create CRUD repository instance
+		repoInstance = repo.NewCRUDRepository(tx)
+	}
 
 	// ensure all queries are in one transaction, ensuring consistency of data
 	// instead of passing in the db connection obj
@@ -97,11 +114,12 @@ func (u *urlController) StoreURLController(requestObj urlmodel.URL) error {
 	return nil
 }
 
-func (u *urlController) GetLongURLController(requestObj urlmodel.URL) (string, error) {
+func (u *urlController) GetLongURLController(ctx context.Context, requestObj urlmodel.URL) (string, error) {
 	// open db
-	// db, err := common.GetDB()
-	// with ORM
-	db := common.GetDB()
+	db := ctx.Value(config.CtxKeyDB).(*gorm.DB)
+	if db == nil {
+		db = common.GetDB()
+	}
 	tx := db.Begin()
 
 	// defer in case of any exceptions
@@ -112,11 +130,16 @@ func (u *urlController) GetLongURLController(requestObj urlmodel.URL) (string, e
 		}
 	}()
 
-	// Create CRUD repository instance
-	repoInstance := repo.NewCRUDRepository(tx)
+	// Testing, check if there is a mock Repo
+	repoInstance := ctx.Value(config.CtxKeyMockCRUDRepository).(repo.CRUDRepositoryInterface)
+	if repoInstance == nil {
+		// Create CRUD repository instance
+		repoInstance = repo.NewCRUDRepository(tx)
+	}
 
 	// call crud
 	longURL, err := repoInstance.GetURL(requestObj)
+
 	// longURL, err := repo.GetURL(tx, requestObj)
 	if err != nil {
 		// rollback immediately

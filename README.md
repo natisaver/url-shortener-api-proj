@@ -230,5 +230,9 @@ This is because we want to do testing in our controller layer which depends on t
         // pass mockObj to a real object and play with it.
       }
 ```
-
+4. run the tests
+```bash
+# both current directory and all subdirectories
+go test ./...
+```
 

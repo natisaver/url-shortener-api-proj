@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"urlshortener/controllers"
@@ -54,7 +55,7 @@ func ShortenURL(c *gin.Context) {
 	// Call the controller to handle business logic
 	// Create controller instance
 	controllerInstance := controllers.NewURLController()
-	err = controllerInstance.StoreURLController(modifiedRequest)
+	err = controllerInstance.StoreURLController(context.TODO(), modifiedRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -78,7 +79,7 @@ func GetLongURL(c *gin.Context) {
 	// Call the controller to handle business logic
 	// Create controller instance
 	controllerInstance := controllers.NewURLController()
-	longURL, err := controllerInstance.GetLongURLController(urlData)
+	longURL, err := controllerInstance.GetLongURLController(context.TODO(), urlData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"urlshortener/config"
 
 	// Default SQL Driver
 	// the _ imports the package without having to directly reference it in code
@@ -15,12 +16,12 @@ import (
 )
 
 const (
-	host       = "localhost"
-	port       = 5432
-	user       = "postgres"
-	password   = "123"
-	dbname     = "urlDB"
-	dbtestname = "urlDBTest"
+	host       = config.Host
+	port       = config.Port
+	user       = config.User
+	password   = config.Password
+	dbname     = config.Dbname
+	dbtestname = config.Dbtestname
 )
 
 // We have 2 choices here for DB connection
@@ -55,7 +56,11 @@ func InitDB() (*gorm.DB, error) {
 	return dbInstance, nil
 }
 
-func GetDB() *gorm.DB {
+// we set the name of this function as a variable
+// so that this variable can replaced with a testDB instead if necessary for testing
+// other option is to pass a test DB via context for testing
+// same concept as using a global time variable, var TimeNow = time.Now()
+var GetDB = func() *gorm.DB {
 	// Return the stored GORM DB instance
 	return db
 }
