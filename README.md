@@ -13,11 +13,12 @@ for web and admin uis, npm run dev
 ### now in the repos
 ```
 cd api or admin or web
-npm run # to see which commands you can run
+npm run
+### to see which commands you can run
 npm install
 npm run dev or npm start
 
-if npm runs into error
+### if npm runs into error
 sudo npm install -g yarn
 yarn install
 ```
