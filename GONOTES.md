@@ -92,4 +92,44 @@ func Sthh() (err error) {
 }
 ```
 
+# Git
+
+## First make a branch for doing the changes
+### Next make a pull request to merge that branch with master
+
+
+### Merging feature branch with latest changes from master
+```bash
+# go to the master branch
+git pull
+# go to the feature branch
+git rebase master featurebranchname
+
+```
+
+### Format for git branch names
+We are adapting to git-flow way of doing things.
+```
+Branch
+  1. master                                      // primary source of truth, QA/Production readiness depend on the CICD pipelines
+  2. develop/<feature>                           // secondary source of truth, typically more applicable when handling large scale project where feature per team level
+  3. feature/<type-of-feature>-<name-of-feature> // all the features include, this branch will either merge to master branch or develop branch on the scale of the project
+  4. hotfix/vX.X.X.X                             // this is usually a fix require to be done on the production, this branch usually merge directly to master
+  5. release/vX.X.X.X                            // this is usually snapshot of all the production readiness, this allow revert of release should new release serious failure in production, typically this are usually last resort scenarios.
+
+type-of-features
+  1. document
+  2. component
+  3. page
+  4. api          // this include hooks, state management, endpoints calls
+  5. test
+  6. prototype-vX // usually this compose of various feature branch for showcase of product to client
+  7. fix          // for the feature but not use for staging / production yet
+
+Notes: Depend on how the CICD works, usually latest commit of features or develop branch will be push to DEV environment. Feel free to discuss with the leads, should there be any possible improvements.
+```
+## References:
+
+1. Git Flow - http://danielkummer.github.io/git-flow-cheatsheet/
+
 
