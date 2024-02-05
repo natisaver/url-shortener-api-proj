@@ -94,8 +94,10 @@ func Sthh() (err error) {
 
 # Git
 
-## First make a branch for doing the changes
-### Next make a pull request to merge that branch with master
+
+### Working on bugs/features
+#### Create a branch first
+thereafter once changes are complete, commit to the branch. You can then make a pull request back to master for review to merge those changes
 
 
 ### Merging feature branch with latest changes from master
