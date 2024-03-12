@@ -256,14 +256,14 @@ go test ./...
 
 ## Why should context not be in struct?
 - This is to retain flexibility
-- the example below shows that if ctx is part of struct, then we will have to instantiate 2 different objects, repo twice just to insert data into A and B
+- the example below shows that if ctx is part of struct "NewRepo", then whenever we instatiate the objects, we will have to instantiate 2 different objects, just to insert data into A and update the value of B
 ```go
 func CtrlA(ctx context.Context) error {
 
 	repo := NewRepo(ctx=1000)
 	repo.InsertDataA(dataA)
 
-    repo := NewRepo(ctx=2000)
+    	repo := NewRepo(ctx=2000)
 	repo.UpdateDataB(dataB)
 
 	return nil
