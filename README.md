@@ -206,14 +206,15 @@ As such I mock this CRUD function to give me a specific result that I want (.EXP
 
 
 ### When to use a real testDB connection for testing VS mocking the database?
+We want a DB for us to run our test cases
 
 #### Mock DB
-Some deployment pipelines may require all your test cases to pass before deploying, and the pipeline may not support connecting to the DB as such in such situations you use mocking of the DB
+Some deployment pipelines may require all test cases to pass in the deployment pipeline itself, the pipeline itself may also not support connecting to the DB
+Although a possible solution to the above problem is to have a docker server run the DB in the pipeline which you can then connect to, but this will make the pipeline heavy
+as such in such situations you use a mock DB for your test cases
 
 #### Using Real DB
-A solution to the above problem is to have a docker server run the DB in the pipeline which you then connect to, but this will make the pipeline heavy
-
-However if the culture is such that you do testing and ensure all test cases pass before pushing to production, then in such a scenario you can use a testDB, testing locally before pushing
+However if the culture of the team is such that you do testing and ensure all test cases pass before pushing to production, then in such a scenario you can use a real DB e.g. called testDB, testing locally before pushing
 
 ### Mockgen
 mockgen is used in gomock to generate mocks
