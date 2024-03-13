@@ -64,6 +64,10 @@ func (t *triangle) Perimeter() int {
 }
 ```
 
+then instantiate it:
+```go
+t1 := routes.NewTriangle(1,2,3)
+```
 
 ## named return
 if you declare a variable name for the return part of your function
