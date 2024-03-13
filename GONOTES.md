@@ -41,6 +41,8 @@ func (t *Triangle) Perimeter() int {
 ## using a constructor  
 - NOTE: struct is **private**
 ```go
+package routes
+
 type Polygon interface {
 	Area() int
 	Perimeter() int
