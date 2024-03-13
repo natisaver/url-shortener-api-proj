@@ -2,7 +2,7 @@
 
 1. [Interfaces](#interfaces)
     - [First Way of Implementing Interface Methods](#first-way-of-implementing-interface-methods)
-    - [Second Way of Implementing Interface Methods Using a Constructor](#second-way-of-implementing-interface-methods-using-a-constructor)
+    - [Second Way of Implementing Interface Methods (Constructor)](#second-way-of-implementing-interface-methods)
     - [Named Return](#named-return)
 
 2. [Git](#git)
