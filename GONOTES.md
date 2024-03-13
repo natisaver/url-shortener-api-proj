@@ -9,7 +9,7 @@
     - [Working on Bugs/Features](#working-on-bugsfeatures)
     - [Merging Feature Branch with Latest Changes from Master](#merging-feature-branch-with-latest-changes-from-master)
     - [Format for Git Branch Names](#format-for-git-branch-names)
-   
+3. [Git Flow](#references)
 # Interfaces
 - What is its purpose? Code only needs to interact with the methods of the interface
 - It does not need to know the implementation of the methods
