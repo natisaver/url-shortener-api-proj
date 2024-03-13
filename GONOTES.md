@@ -1,4 +1,15 @@
+## Table of Contents
 
+1. [Interfaces](#interfaces)
+    - [First Way of Implementing Interface Methods](#first-way-of-implementing-interface-methods)
+    - [Second Way of Implementing Interface Methods Using a Constructor](#second-way-of-implementing-interface-methods-using-a-constructor)
+    - [Named Return](#named-return)
+
+2. [Git](#git)
+    - [Working on Bugs/Features](#working-on-bugsfeatures)
+    - [Merging Feature Branch with Latest Changes from Master](#merging-feature-branch-with-latest-changes-from-master)
+    - [Format for Git Branch Names](#format-for-git-branch-names)
+   
 # Interfaces
 - What is its purpose? Code only needs to interact with the methods of the interface
 - It does not need to know the implementation of the methods
