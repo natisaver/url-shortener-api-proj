@@ -5,7 +5,7 @@
 - You can thus change the implementation of the methods without affecting the code
 
 ## First way of implementing interface methods  
-### struct is public 
+- NOTE: struct is **public** 
 ```go
 type Polygon interface {
 	Area() int
@@ -28,7 +28,7 @@ func (t *Triangle) Perimeter() int {
 
 ## Second way of implementing interface methods
 ## using a constructor  
-### struct is private
+- NOTE: struct is **private**
 ```go
 type Polygon interface {
 	Area() int
