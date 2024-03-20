@@ -15,7 +15,7 @@ type URL struct {
 	// store time as uint64 as a standard, unsigned long integer without timezone, do processing outside when retrieving
 	// so in DB to store as long its called BIGINT
 	// WHY uint64?
-	// 1. standardised, we usually do to milliseconds
+	// 1. standardised, postgre doesnt support signed integers, we usually store up till milliseconds
 	// 2. numbers are easier to index, processing is faster
 	// 3. smaller space usage compared to storing a composite
 	// using a primitive type like long/BIGINT (8 bytes) will have a dedicated chunk allocated
