@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	// "github.com/natisaver/urlshortner/routes"
-	"urlshortener/routes"
+	"urlshortener/handlers"
 )
 
 type Server struct {
@@ -30,8 +30,8 @@ func (s *Server) Init(port string) {
 
 	// All routes defined within this group will have the /v1 prefix
 	apiV1 := s.router.Group("/v1")
-	apiV1.POST("/shorten", routes.ShortenURL)
-	apiV1.GET("/:encodedurl", routes.GetLongURL)
+	apiV1.POST("/shorten", handlers.ShortenURL)
+	apiV1.GET("/:encodedurl", handlers.GetLongURL)
 }
 
 func (s *Server) Serve() error {

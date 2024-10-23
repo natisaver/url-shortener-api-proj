@@ -1,21 +1,22 @@
 package utils
 
 import (
-	"encoding/base64"
-	"strings"
+	"crypto/md5"
+	"encoding/hex"
 )
 
 func ShortenURL(sanitizedURL string) (string, error) {
+	// Generate MD5 hash of the sanitizedURL
+	hasher := md5.New()
+	hasher.Write([]byte(sanitizedURL))
+	hashBytes := hasher.Sum(nil)
 
-	// Base64 encode the URL to create a short representation
-	shortURL := base64.URLEncoding.EncodeToString([]byte(sanitizedURL))
+	// Convert the hash to a hexadecimal string
+	shortURL := hex.EncodeToString(hashBytes)
 
-	// Remove padding characters from base64 encoding
-	shortURL = strings.TrimRight(shortURL, "=")
-
-	// You can prepend your local host or a custom domain
-	// but im storing the encoded form directly
-	// shortURL = "http://localhost/" + shortURL
+	// truncate to 8 characters
+	// 16^8 = 4.29 billion urls
+	shortURL = shortURL[:8]
 
 	return shortURL, nil
 }

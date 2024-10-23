@@ -1,9 +1,10 @@
-package routes
+package handlers
 
 import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 	"urlshortener/controllers"
 	"urlshortener/models/urlmodel"
 	"urlshortener/utils"
@@ -48,8 +49,9 @@ func ShortenURL(c *gin.Context) {
 
 	// Create a new object with the modified shortURL
 	modifiedRequest := urlmodel.URL{
-		LongURL:  sanitizedURL,
-		ShortURL: shortenedURL,
+		LongURL:   sanitizedURL,
+		ShortURL:  shortenedURL,
+		CreatedAt: uint64(time.Now().Unix()),
 	}
 
 	// Call the controller to handle business logic
